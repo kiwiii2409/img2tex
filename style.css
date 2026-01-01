@@ -31,12 +31,14 @@ body {
   gap: 1px;
 }
 .api-key-input {
-  padding: 8px;
+  padding: 2px 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 250px;
-  font-size: 0.9rem;
+  font-size: 1.4rem;
 }
+
+
 
 main {
   padding: 2rem 3rem;
