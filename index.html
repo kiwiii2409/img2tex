@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Img2Tex</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="site-title">Img2Tex</div>
+        <div class="api-key-container">
+            <input type="password" id="apiKey" class="api-key-input" placeholder="Enter AWS API Key...">
+        </div>
+    </header>
+
+    <main>
+        <section class="tool-container">
+            
+            <div class="tool-section shrink-section">
+                <h2>Upload or Paste Image</h2>
+                <div class="input-box" id="drop-zone">
+                    <label class="box-label">
+                        <input type="file" id="input-field" accept="image/*" />
+                        <strong>Click to Upload</strong>
+                        <span class="sub-text">(or paste an image with Ctrl+V)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="tool-section shrink-section">
+                <h2>LaTeX Output</h2>
+                <div class="output-box">
+                    <div class="output-field" id="output-field">
+                        </div>
+                    <button class="copy-btn" id="copy-btn">Copy</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
