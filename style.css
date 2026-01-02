@@ -12,7 +12,7 @@ body {
 
 .main-header {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   background: #f8f8f8;
@@ -31,14 +31,41 @@ body {
   gap: 1px;
 }
 .api-key-input {
+  height: 2rem;
+  line-height: 2rem;
   padding: 5px 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 250px;
-  font-size: 1.1rem;
+  font-size: 1.0rem;
 }
 .api-key-input::placeholder {
   font-size: 0.9rem;
+  
+}
+
+.demo-btn {
+  height: 2rem;
+
+  background-color: #ff9800;
+  color: white;
+
+  font-size: 0.8rem;
+
+  margin-left: 8px;
+  padding: 0 7px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  transition: background-color 0.2s;
+
+}
+.demo-btn:hover {
+  background-color: #e68a00; 
+}
+.demo-btn:active {
+  transform: scale(0.99);
 }
 
 
@@ -138,6 +165,10 @@ h2 {
   opacity: 1;
 }
 
+.copy-btn:active {
+  transform: scale(0.99); 
+}
+
 footer {
   text-align: center;
   margin-top: 4rem;
@@ -160,8 +191,8 @@ footer {
 
 @media (max-width: 500px) {
   .main-header {
-    flex-direction: column; 
-    gap: 0.7rem; 
+    flex-direction: column;
+    gap: 0.7rem;
   }
 
   .api-key-input {
