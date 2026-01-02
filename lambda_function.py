@@ -26,7 +26,7 @@ def lambda_handler(event, context):
 
         user_key = event.get('headers', {}).get('x-api-key', '').strip()
         if user_key == DEMO_API_KEY:
-            model = "google/gemma-3-27b-it:free"
+            model = "google/gemma-3-4b-it"
         else:
             model = "google/gemma-3-27b-it"   
 
@@ -38,6 +38,7 @@ def lambda_handler(event, context):
 
         payload = {
             "model": model,
+            "temperature": 0.1, 
             "messages": [
                 {
                     "role": "system",

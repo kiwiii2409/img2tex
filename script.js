@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (response.status === 400 && apiKeyInput.value === DEMO_KEY) {
-        throw new Error("Img2Tex demo rate limit exceeded.");
+        throw new Error("Img2Tex demo rate or OpenRouter limit exceeded.");
       }
 
 
