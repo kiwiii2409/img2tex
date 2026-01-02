@@ -5,4 +5,3 @@ The AWS API key is stored locally in your browser and only needs to be entered o
 
 The offered demo mode exposes one of the AWS API keys but is restricted to 200 requests per month using AWS Usage Plans
 
-
