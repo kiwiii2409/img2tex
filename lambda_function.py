@@ -26,9 +26,9 @@ def lambda_handler(event, context):
 
         user_key = event.get('headers', {}).get('x-api-key', '').strip()
         if user_key == DEMO_API_KEY:
-            model = "google/gemma-3-4b-it"
+            model = "google/gemma-3-27b-it"
         else:
-            model = "google/gemma-3-27b-it"   
+            model = "qwen/qwen2.5-vl-72b-instruct"   
 
         body = json.loads(event['body'])
         image_data = body.get('image')  # base64 string
@@ -38,12 +38,17 @@ def lambda_handler(event, context):
 
         payload = {
             "model": model,
-            "temperature": 0.1, 
+            "temperature": 0.01, 
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant. Find the mathematical formula in the image and convert it to LaTeX. If no formula is found, reply with: 'No formula found'. Only reply with the content enclosed in \\[ and \\]."
-                },
+                    "content": (
+                        "You are a LaTeX OCR. Convert the image to raw LaTeX enclosed in \\[ ... \\]. "
+                        "Do NOT use Markdown code blocks or backticks. "
+                        "For multi-line equations, use the `aligned` environment. "
+                        "If symbols are ambiguous, output the most likely option."
+                        "If no math is found, return 'No formula found'. "
+                    )                },
                 {
                     "role": "user",
                     "content": [
@@ -68,7 +73,6 @@ def lambda_handler(event, context):
                 "X-Title": "img2tex"
             }
         )
-
         response = urllib.request.urlopen(req)
         response_data = json.loads(response.read().decode('utf-8'))
 
@@ -93,7 +97,7 @@ def lambda_handler(event, context):
             return {
                 'statusCode': e.code,
                 'headers': headers,
-                'body': json.dumps({'result': e.reason})
+                'body': json.dumps({'result': e.reason, 'test': f"{response.read()}"})
             }
     except Exception as e:
         print(f"Error: {str(e)}")

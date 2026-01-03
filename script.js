@@ -132,6 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("Img2Tex demo rate or OpenRouter limit exceeded.");
       }
 
+      if (response.status === 502) {
+        throw new Error("Lambda likely timed out before the response was generated.");
+      }
 
       if (!response.ok) throw new Error(`Server Error: ${response.result}`);
 
