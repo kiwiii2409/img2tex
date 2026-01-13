@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyButton = document.getElementById("copy-btn");
   const apiKeyInput = document.getElementById("apiKey");
   const demoBtn = document.getElementById("demo-btn");
+  const historyListElement = document.getElementById("history-list");
+
+  let historyData = []; // non persistent, removed with each refresh
 
   // read and use key from storage if present
   const savedKey = localStorage.getItem("img2tex_api_key");
@@ -29,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // toggle DEMO mode
   demoBtn.addEventListener("click", () => {
     let isDemoActive = apiKeyInput.value === DEMO_KEY;
 
@@ -52,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   input.addEventListener("change", handleFileSelect);
-  copyButton.addEventListener("click", copyToClipboard);
+  copyButton.addEventListener("click", copyToClipboard_result);
   window.addEventListener("paste", handlePaste);
 
   function isImage(file) {
@@ -66,14 +70,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handlePaste(event) {
-    const items = (event.clipboardData || event.originalEvent.clipboardData)
-      .items;
-    for (let index in items) {
-      const item = items[index];
+    const items = event.clipboardData.items;
+    for (const item of items) {
       if (item.kind === "file") {
-        const blob = item.getAsFile();
-        if (isImage(blob)) {
-          processFile(blob);
+        let file = item.getAsFile();
+        if (isImage(file)) {
+          processFile(file);
           return;
         }
       }
@@ -116,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ image: base64Image }),
       });
 
-      if (response.status === 403){
+      if (response.status === 403) {
         // delete faulty key from storage
         if (apiKeyInput.value !== DEMO_KEY) {
           localStorage.setItem("img2tex_api_key", "");
@@ -133,7 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (response.status === 502) {
-        throw new Error("Lambda likely timed out before the response was generated.");
+        throw new Error(
+          "Lambda likely timed out before the response was generated."
+        );
       }
 
       if (!response.ok) throw new Error(`Server Error: ${response.result}`);
@@ -142,9 +146,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const finalText = data.result || JSON.stringify(data);
       setOutput(finalText, "success");
+
+      if (
+        !finalText.startsWith("Error:") &&
+        !finalText.includes("No formula found")
+      ) {
+        addToHistory(finalText);
+      }
     } catch (error) {
       setOutput(`Error: ${error.message}`, "error");
     }
+  }
+
+  function addToHistory(text) {
+    if (historyData[0] === text) {
+      return;
+    }
+    historyData.unshift(text);
+    if (historyData.length > 5) {
+      historyData.pop();
+    }
+
+    renderHistory();
+  }
+
+  function renderHistory() {
+    historyListElement.innerHTML = "";
+    for (let i = 0; i < historyData.length; i++) {
+      let text = historyData[i];
+      let history_elem = createHistElem(text);
+      historyListElement.appendChild(history_elem);
+    }
+  }
+
+  function createHistElem(text) {
+    const item = document.createElement("div");
+    item.className = "history-item";
+
+    const span = document.createElement("span");
+    span.className = "history-text";
+    span.textContent = text;
+    item.onclick = () => {
+      navigator.clipboard.writeText(text).then(() => {
+        span.textContent = "Copied!";
+        span.style.fontWeight = "bold";
+        item.style.backgroundColor = "#d4edda";
+        setTimeout(() => {
+          span.textContent = text;
+          span.style.fontWeight = "normal";
+          item.style.backgroundColor = "#ffffff";
+        }, 2000);
+      });
+    };
+    item.append(span);
+    return item;
   }
 
   function setOutput(text, type) {
@@ -159,13 +214,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = new Image();
         img.onload = () => {
           const elem = document.createElement("canvas");
-          const MAX_WIDTH = 1024;
+          const MAX_SIZE = 2048;
           let width = img.width;
           let height = img.height;
 
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
+          /*scale the larger side down to MAX_SIZE and the other proportional*/
+          if (width > MAX_SIZE || height > MAX_SIZE) {
+             const ratio = Math.min(MAX_SIZE / width, MAX_SIZE / height);
+             width *= ratio;
+             height *= ratio;
           }
 
           elem.width = width;
@@ -183,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function copyToClipboard() {
+  function copyToClipboard_result() {
     if (!outputField.textContent) return;
 
     navigator.clipboard

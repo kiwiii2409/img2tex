@@ -28,7 +28,7 @@ def lambda_handler(event, context):
         if user_key == DEMO_API_KEY:
             model = "google/gemma-3-27b-it"
         else:
-            model = "qwen/qwen2.5-vl-72b-instruct"   
+            model = "qwen/qwen3-vl-30b-a3b-instruct"   
 
         body = json.loads(event['body'])
         image_data = body.get('image')  # base64 string
@@ -43,12 +43,17 @@ def lambda_handler(event, context):
                 {
                     "role": "system",
                     "content": (
-                        "You are a LaTeX OCR. Convert the image to raw LaTeX enclosed in \\[ ... \\]. "
-                        "Do NOT use Markdown code blocks or backticks. "
-                        "For multi-line equations, use the `aligned` environment. "
-                        "If symbols are ambiguous, output the most likely option."
-                        "If no math is found, return 'No formula found'. "
-                    )                },
+                        "You are a LaTeX OCR expert. Convert the mathematical content in the image "
+                        "into a single raw LaTeX string enclosed in \\[ ... \\].\n\n"
+                        "Rules:\n"
+                        "1. Output ONLY the raw string starting with \\[ and ending with \\].\n"
+                        "2. Do NOT use markdown code blocks (no ```), no backticks, and no conversational text.\n"
+                        "3. For multi-line equations, use the `aligned` environment inside the brackets.\n"
+                        "4. Use standard `amsmath` notation.\n"
+                        "5. If no formula is found, return exactly: 'No formula found'."
+                        "6. Remove all unnecessary spaces."
+                    )
+                },
                 {
                     "role": "user",
                     "content": [

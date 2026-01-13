@@ -125,7 +125,7 @@ h2 {
 .box-label input[type="file"] {
   display: none;
 }
-.box-label span.sub-text {
+.sub-text {
   font-size: 0.9rem;
   color: #999;
   margin-top: 5px;
@@ -169,14 +169,54 @@ h2 {
   transform: scale(0.99); 
 }
 
-footer {
-  text-align: center;
-  margin-top: 4rem;
-  padding: 1rem;
-  border-top: 1px solid #ccc;
-  background: #f8f8f8;
-  color: #777;
+.history-box {
+  justify-content: start;
+  padding: 1.5rem;
+  overflow-y: auto;
+  border: 3px solid #ccc;
 }
+
+.history-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.placeholder-text {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.history-item:hover {
+  transform: scale(0.992); 
+  border-color: #bbb;
+  cursor: pointer; 
+}
+
+.history-text {
+  font-family: "Courier New", monospace;
+  font-size: 1rem;
+  color: #333;
+  overflow: hidden;
+  margin-right: 1rem;
+  transition: all 0.2s;
+}
+
 
 .error {
   color: #dc3545;
@@ -200,4 +240,10 @@ footer {
     max-width: 250px;
     text-align: center;
   }
+
+  .history-text {
+  font-size: 0.8rem;
+
+  }
+
 }
